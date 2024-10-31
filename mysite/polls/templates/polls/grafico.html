@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <svg width="960" height="500"></svg>
+  </head>
+
+    <style>
+
+      body {
+        text-align: center;
+        margin-top: 5em;
+        background-color: #74b9ff;
+      }
+
+      h1 {
+        color: snow;
+      }
+
+
+    </style>
+
+
+    <body>
+    <h1>Bitcoin Prices in U.S. Dollars</h1>
+    <script>
+
+
+  var url = "http://localhost:8000/polls/prices/";
+
+
+  d3.json(url).get(function(error, d) {
+    console.log(d);
+
+    var data = d.Data;
+    data.forEach(function(d){ d.time = new Date(d.time * 1000) });
+
+    if (error) throw error;
+
+    var svg = d3.select("svg"),
+        margin = {top: 20, right: 20, bottom: 30, left: 50},
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom,
+        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var x = d3.scaleTime()
+        .range([0, width])
+
+    var y = d3.scaleLinear()
+        .range([height, 0]);
+
+    var line = d3.line()
+        .x(function(d) { return x(d.time); })
+        .y(function(d) { return y(d.close); });
+
+    x.domain(d3.extent(data, function(d) { return d.time; }));
+    y.domain(d3.extent(data, function(d) { return d.close; }));
+
+    g.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x))
+        .attr("stroke-width", 2)
+        .attr("fill", "none")
+        .style("font-size",".8em");
+
+    g.append("g")
+        .call(d3.axisLeft(y))
+        .attr("stroke-width", 2)
+        .style("font-size",".8em")
+      .append("text")
+        .attr("fill", "#000")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 20)
+        .attr("text-anchor", "end")
+        .attr("font-size", "1.2em")
+        .text("Price ($)")
+
+
+    g.append("path")
+        .datum(data)
+        .attr("fill", "none")
+        .attr("stroke", "#ffeaa7")
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+        .attr("stroke-width", 2)
+        .attr("d", line);
+
+  });
+
+    </script>
+  </body>
+</html>
