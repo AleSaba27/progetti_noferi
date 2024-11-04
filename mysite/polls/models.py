@@ -27,3 +27,12 @@ class Price(models.Model):
     time=models.CharField(max_length=50)
     close=models.FloatField()
     
+
+class Box(models.Model):
+    x=models.FloatField()
+    y=models.FloatField() 
+    z=models.FloatField()  
+    pos_x=models.IntegerField()
+    pos_y=models.IntegerField()
+    pos_z=models.IntegerField()
+    color=models.CharField(max_length=8)

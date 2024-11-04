@@ -20,5 +20,6 @@ urlpatterns = [
     path("grafico/", views.grafico, name="grafico"),
     path("scarica_prices/", views.scarica_prices, name="scarica_prices"),
     path("prices/", views.prices, name="prices"),
-    path("chart/", views.chart, name="chart")
+    path("chart/", views.chart, name="chart"),
+    path("scena/", views.scena, name="scena")
 ]

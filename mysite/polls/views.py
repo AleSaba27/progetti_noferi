@@ -11,7 +11,7 @@ import pandas as pd
 import random
 
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from .models import Question, Choice,Cat,Price
+from .models import Question, Choice,Cat,Price,Box
 from django.template import loader
 
 def index(request):
@@ -160,3 +160,13 @@ def chart(request):
         
     }
     return render(request, 'polls/chart.html', context=context)
+
+
+def scena(request):
+    boxes=Box.objects.all()
+
+    context= {
+        'boxes':boxes
+       
+    }
+    return render(request, 'polls/scena.html', context=context)
