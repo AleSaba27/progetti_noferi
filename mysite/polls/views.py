@@ -148,3 +148,9 @@ def prices(request):
       
     return JsonResponse(d)
 
+
+def chart(request):
+    context= {
+        
+    }
+    return render(request, 'polls/chart.html', context=context)
