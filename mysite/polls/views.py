@@ -151,6 +151,8 @@ def prices(request):
 
 def chart(request):
     context= {
+        "labels": ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        "data": [12, 19, 3, 5, 2, 3],
         
     }
     return render(request, 'polls/chart.html', context=context)
