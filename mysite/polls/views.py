@@ -8,6 +8,7 @@ import markdown
 from django.db import models
 import requests
 import pandas as pd
+import random
 
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .models import Question, Choice,Cat,Price
@@ -152,7 +153,10 @@ def prices(request):
 def chart(request):
     context= {
         "labels": ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        "data": [12, 19, 3, 5, 2, 3],
+        "data": [random.randrange(3, 9),random.randrange(3, 9),
+                 random.randrange(3, 9),random.randrange(3, 9),
+                 random.randrange(3, 9),random.randrange(3, 9)
+                ],
         
     }
     return render(request, 'polls/chart.html', context=context)
