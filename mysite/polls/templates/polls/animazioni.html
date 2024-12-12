@@ -1,0 +1,68 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+        <script type="importmap">
+            {
+              "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+              }
+            }
+        </script>
+		<script type="module">
+            import * as THREE from 'three';
+            import { FBXLoader } from 'three/addons/loaders/FBXLoader.js'
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+            scene.add(new THREE.AxesHelper(5))
+            const renderer = new THREE.WebGLRenderer();
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            renderer.setAnimationLoop( animate );
+            document.body.appendChild( renderer.domElement );
+            const fbxLoader = new FBXLoader()
+{% for modello in modelli%}
+
+
+fbxLoader.load(
+    '{% static  modello %}',
+    //la seguente è una funzione anonima, si usa quando si deve usare una funzione che non si richiamerà mai più. Risparmio caratteri e non consuma(less i more in informatica)
+    (object) => {
+      
+        scene.add(object)
+    },
+    (xhr) => {
+        console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+    },
+    (error) => {
+        console.log(error)
+    }
+);
+            
+{% endfor%}
+
+
+            camera.position.z = 5;
+
+            function animate() {
+
+                //cube.position.x += 0.01;
+                //cube.position.y += 0.01;
+
+                renderer.render( scene, camera );
+
+            }
+
+        </script>
+
+	</body>
+</html>

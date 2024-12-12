@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generatore QR Code per Tavoli</title>
+    <script src="https://davidshimjs.github.io/qrcodejs/qrcode.min.js"></script>
+</head>
+<body>
+    <h1>Generatore QR Code per Tavoli</h1>
+
+    <!-- Input per il Base URL -->
+    <label for="baseUrl">Inserisci l'URL di base:</label>
+    <input type="text" id="baseUrl" placeholder="https://www.tuosito.com" style="width: 300px;">
+    <br><br>
+
+    <!-- Input per il numero di QR code -->
+    <label for="numTables">Inserisci il numero di tavoli:</label>
+    <input type="number" id="numTables" min="1" max="100" value="1">
+    <button onclick="generateQRCodes()">Genera QR Code</button>
+
+    <!-- Contenitore per i QR code generati -->
+    <div id="qrcodesContainer" style="margin-top: 20px;"></div>
+
+    <script>
+        function generateQRCodes() {
+            // Pulisce il contenitore dei QR code
+            const container = document.getElementById("qrcodesContainer");
+            container.innerHTML = "";
+
+            // Ottieni l'URL di base e il numero di tavoli dall'input
+            const baseUrl = document.getElementById("baseUrl").value.trim();
+            const numTables = parseInt(document.getElementById("numTables").value);
+
+            // Controlla che il baseUrl sia stato inserito
+            if (!baseUrl) {
+                alert("Per favore, inserisci un URL di base valido.");
+                return;
+            }
+
+            // Ciclo per generare i QR Code per il numero di tavoli specificato
+            for (let i = 1; i <= numTables; i++) {
+                const url = `${baseUrl}?table=${i}`;
+
+                // Crea un div per ogni QR code e lo aggiunge al contenitore
+                const qrDiv = document.createElement("div");
+                qrDiv.style.margin = "10px";
+                container.appendChild(qrDiv);
+
+                // Genera il QR code all'interno del div
+                new QRCode(qrDiv, {
+                    text: url,
+                    width: 128,
+                    height: 128
+                });
+            }
+        }
+    </script>
+</body>
+</html>

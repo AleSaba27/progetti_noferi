@@ -21,5 +21,11 @@ urlpatterns = [
     path("scarica_prices/", views.scarica_prices, name="scarica_prices"),
     path("prices/", views.prices, name="prices"),
     path("chart/", views.chart, name="chart"),
-    path("scena/", views.scena, name="scena")
+    path("scena/", views.scena, name="scena"),
+    path("modelli/", views.modelli, name="modelli"),
+    path("prove/", views.prove, name="prove"),
+    path("provaqr/", views.provaqr, name="provaqr"),
+    path("generaqr/", views.generaqr, name="generaqr"),
+    path("speech_to_text/", views.speech_to_text, name="speech_to_text"),
+
 ]

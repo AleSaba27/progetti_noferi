@@ -14,6 +14,13 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .models import Question, Choice,Cat,Price,Box
 from django.template import loader
 
+import os
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
+import whisper
+import torch
+
 def index(request):
     latest_question_list = Question.objects.order_by("-pub_date")[:5]
     template = loader.get_template("polls/index.html")
@@ -170,3 +177,57 @@ def scena(request):
        
     }
     return render(request, 'polls/scena.html', context=context)
+
+def modelli(request):
+    modelli=['polls/spiderman.fbx']
+    context= {
+        'modelli': modelli,
+       
+    }
+    return render(request, 'polls/modelli.html', context=context)
+
+def prove(request):
+    
+    context= {
+        
+       
+    }
+    return render(request, 'polls/prove.html', context=context)
+
+def provaqr(request):
+    
+    context= {
+        
+       
+    }
+    return render(request, 'polls/provaqr.html', context=context)
+
+def generaqr(request):
+    
+    context= {
+        
+       
+    }
+    return render(request, 'polls/generaqr.html', context=context)
+
+
+# Inizializza il modello Whisper (se è già stato installato e configurato)
+model = whisper.load_model("medium")
+@csrf_exempt
+def speech_to_text(request):
+    if request.method == 'GET':
+        return render(request, 'polls/speech_to_text.html')
+    elif request.method == 'POST' and request.FILES.get('audio'):
+        audio_file = request.FILES['audio']
+        temp_path = default_storage.save('temp_audio.wav', audio_file)
+        print(default_storage.path(temp_path))
+        try:
+            transcription_result = model.transcribe(default_storage.path(temp_path),language="it", fp16=torch.cuda.is_available())
+            print(transcription_result)
+            transcription_text = transcription_result.get('text', '')
+            os.remove(temp_path)
+            return JsonResponse({'transcription': transcription_text})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+

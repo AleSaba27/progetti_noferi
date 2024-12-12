@@ -36,3 +36,48 @@ class Box(models.Model):
     pos_y=models.IntegerField()
     pos_z=models.IntegerField()
     color=models.CharField(max_length=8)
+
+
+
+
+
+
+class QRCode(models.Model):
+    nome = models.CharField(max_length=100)
+    link_menu = models.URLField()
+
+    def __str__(self):
+        return self.nome
+    
+    
+class Ordine(models.Model):
+    qr_code = models.ForeignKey(QRCode, on_delete=models.CASCADE, related_name="ordini")
+    data_creazione = models.DateTimeField(auto_now_add=True)
+    dettagli = models.TextField()
+
+    def __str__(self):
+        return f"Ordine {self.id} - QR {self.qr_code.nome}"
+    
+
+
+class Tipologia(models.Model):
+
+    tipo = models.CharField(max_length=20)
+    immagine = models.ImageField(upload_to="tipologia/")
+
+    def __str__(self):
+        return self.tipo
+
+
+class Portata(models.Model):
+    
+    tipologia = models.ForeignKey("Tipologia", on_delete=models.CASCADE)
+    nome = models.CharField(max_length=20)
+    immagine = models.ImageField(upload_to="portate/")
+    ingredienti = models.CharField(max_length=20)
+    allergeni = models.CharField(max_length=20)
+    disponibilita = models.BooleanField(default=True)
+    prezzo = models.FloatField()
+
+    def __str__(self):
+        return self.nome

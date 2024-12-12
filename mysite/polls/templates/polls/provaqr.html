@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scansione Codice QR</title>
+    <!-- Link alternativo al CDN per html5-qrcode -->
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <style>
+        #reader {
+            width: 300px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Scansiona un Codice QR</h1>
+    <div id="reader"></div>
+    <div id="result">Risultato: <span id="qr-result"></span></div>
+
+    <script>
+        function onScanSuccess(decodedText, decodedResult) {
+            // Mostra il risultato
+            document.getElementById("qr-result").innerText = decodedText;
+            // Ferma la scansione dopo aver trovato un codice QR
+            html5QrCode.stop().then(ignore => {
+                console.log("Scansione interrotta.");
+            }).catch(err => {
+                console.error("Errore nell'interrompere la scansione: ", err);
+            });
+        }
+
+        function onScanError(errorMessage) {
+            // Log degli errori di scansione
+            console.log("Errore di scansione:", errorMessage);
+        }
+
+        // Assicurati che la libreria sia caricata prima di eseguire questo codice
+        window.addEventListener('load', function() {
+            const html5QrCode = new Html5Qrcode("reader");
+            html5QrCode.start(
+                { facingMode: "environment" },
+                {
+                    fps: 10,    // Fotogrammi per secondo
+                    qrbox: { width: 250, height: 250 }  // Dimensioni dell'area di scansione
+                },
+                onScanSuccess,
+                onScanError
+            ).catch(err => {
+                console.error("Errore nell'avvio della scansione: ", err);
+            });
+        });
+    </script>
+</body>
+</html>

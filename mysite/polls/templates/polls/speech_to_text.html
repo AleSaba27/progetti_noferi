@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech to Text</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #transcription {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Parla e trascriviamo il tuo audio</h1>
+    <button id="start-recording">Inizia Registrazione</button>
+    <button id="stop-recording" disabled>Ferma Registrazione</button>
+
+    <div id="transcription">
+        <h3>Trascrizione:</h3>
+        <p id="transcription-text">Nessun testo disponibile</p>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+
+        const startButton = document.getElementById('start-recording');
+        const stopButton = document.getElementById('stop-recording');
+        const transcriptionText = document.getElementById('transcription-text');
+
+        startButton.addEventListener('click', async () => {
+            // Richiedi l'accesso al microfono
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+
+            mediaRecorder.ondataavailable = event => {
+                audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = async () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                audioChunks = [];
+
+                // Invia l'audio al backend
+                const formData = new FormData();
+                formData.append('audio', audioBlob);
+
+                const response = await fetch('', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    transcriptionText.textContent = data.transcription || 'Errore nella trascrizione.';
+                } else {
+                    transcriptionText.textContent = 'Errore durante l\'invio dell\'audio.';
+                }
+            };
+
+            mediaRecorder.start();
+            startButton.disabled = true;
+            stopButton.disabled = false;
+        });
+
+        stopButton.addEventListener('click', () => {
+            mediaRecorder.stop();
+            startButton.disabled = false;
+            stopButton.disabled = true;
+        });
+    </script>
+</body>
+</html>
